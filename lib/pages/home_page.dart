@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:qr_reader/providers/db_provider.dart';
+import 'package:qr_reader/providers/scan_list_provider.dart';
 import '../providers/iu_provider.dart';
 
 import '../widgets/custom_navigatorbar.dart';
@@ -20,7 +21,11 @@ class HomePage extends StatelessWidget {
         title: const Text('Historial'),
         actions: [
           IconButton(
-            onPressed: (() {}),
+            onPressed: (() {
+              final scanListProvider =
+                  Provider.of<ScanListProvider>(context, listen: false);
+              scanListProvider.borrarTodos();
+            }),
             icon: const Icon(Icons.delete_forever),
           )
         ],
@@ -46,17 +51,17 @@ class _HomePageBody extends StatelessWidget {
     //Cambiar para mostrar la página respectiva
     final currentIndex = uiProvider.selectedMenuOpt;
 
-    // Temporal: leer la base de datos
-    DBProvider.db.database;
-    //
-    final tempScan = ScanModel(valor: 'https://andresbadillo.co');
-    DBProvider.db.nuevoScan(tempScan);
+    // Uscar el ScanListProvider
+    final scanListProvider =
+        Provider.of<ScanListProvider>(context, listen: false);
 
     switch (currentIndex) {
       case 0:
+        scanListProvider.cargarScanPorTipo('geo');
         return MapasPage();
 
       case 1:
+        scanListProvider.cargarScanPorTipo('http');
         return DirectionsPage();
 
       default:
